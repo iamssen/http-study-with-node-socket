@@ -1,0 +1,8 @@
+/*.iml
+/.idea/
+/.yarnclean
+/*.log
+
+/node_modules/
+/package-lock.json
+/react-zeroconfig-*.tgz
