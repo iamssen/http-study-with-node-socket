@@ -92,7 +92,6 @@ client.connect(port, '127.0.0.1', () => {
   const boundary: string = `----WebKitFormBoundary38yDqquZpvcGcWJX`;
   
   const content: string[] = [
-    ``,
     `--${boundary}`,
     `Content-Disposition: form-data; name="my-file"; filename="test.json"`,
     `Content-Type: application/json`,
@@ -107,8 +106,12 @@ client.connect(port, '127.0.0.1', () => {
     `Content-Length: ${content.join('\r\n').length}`,
     `Content-Type: multipart/form-data; boundary=${boundary}`,
     `User-Agent: test-client`,
+    ``,
     ...content,
   ].join('\r\n');
+  
+  console.log(`[client] request:`);
+  console.log(request.split('\r\n'));
   
   client.write(request);
 });
