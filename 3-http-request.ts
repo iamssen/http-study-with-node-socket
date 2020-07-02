@@ -5,12 +5,12 @@ const port: number = 9903;
 // ---------------------------------------------
 // server
 // ---------------------------------------------
-const server: Server = createServer((socket) => {
-  console.log(`[server] connected client: ${JSON.stringify(socket.address())}`);
+const server: Server = createServer((clientSocket: Socket) => { // 2. this is the client below
+  console.log(`[server] connected client: ${JSON.stringify(clientSocket.address())}`);
   
-  socket.on('data', data => {
+  clientSocket.on('data', clientData => { // 4. receive the request from client below
     console.log(`[server] received data from client:`);
-    console.log(data.toString().split('\r\n'));
+    console.log(clientData.toString().split('\r\n'));
     
     const response: string = [
       'HTTP/1.1 200 OK',
@@ -23,7 +23,7 @@ const server: Server = createServer((socket) => {
       '',
     ].join('\r\n');
     
-    socket.write(response);
+    clientSocket.write(response); // 5. respone to client
   });
 });
 
@@ -36,24 +36,24 @@ server.listen(port, () => {
 // ---------------------------------------------
 const client: Socket = new Socket();
 
-client.connect(port, '127.0.0.1', () => {
+client.connect(port, '127.0.0.1', () => { // 1. connect to server
   console.log(`[client] connected`);
   
   const request: string = [
     'GET / HTTP/1.1',
     'Accept: */*',
-    'User-Agent: test-agent',
+    'User-Agent: my-test-agent',
     'Host: localhost:' + port,
     '',
     '',
   ].join('\r\n');
   
-  client.write(request);
+  client.write(request); // 3. request to server
 });
 
-client.on('data', data => {
+client.on('data', serverData => { // 6. receive the response from server
   console.log(`[client] received data from server:`);
-  console.log(data.toString().split('\r\n'));
+  console.log(serverData.toString().split('\r\n'));
   client.destroy();
 });
 
